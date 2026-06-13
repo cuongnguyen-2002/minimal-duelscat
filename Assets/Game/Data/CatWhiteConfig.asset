@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db8439fdef00c724c88879083df13e08, type: 3}
+  m_Name: CatWhiteConfig
+  m_EditorClassIdentifier: Assembly-CSharp::CatConfig
+  _skeletonDataAsset: {fileID: 11400000, guid: a01f947482f8d4b5d85f2f4e76129b03, type: 2}
+  _idleAnimationName: Idle_Start
+  _startAnimationName: Idle_Playing
+  _winAnimationName: Cheering_Happy _Victory
+  _loseAnimationName: Miss_Object
+  _eatAnimationName: Eating_Single_Object
