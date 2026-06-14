@@ -17,7 +17,6 @@ public class HomeScreen : UIBase
     public override void Show()
     {
         base.Show();
-        _canvasGroup.DOFade(1, 0);
         _leftHand.DOAnchorPosX(-365, 1f).SetLoops(-1 ,LoopType.Yoyo).SetEase(Ease.Linear);
         _rightHand.DOAnchorPosX(365, 1f).SetLoops(-1 ,LoopType.Yoyo).SetEase(Ease.Linear);
     }
@@ -25,7 +24,6 @@ public class HomeScreen : UIBase
     public override void Hide()
     {
         base.Hide();
-        _canvasGroup.DOFade(0, 1);
         _leftHand.DOKill();
         _rightHand.DOKill();
     }
@@ -34,5 +32,7 @@ public class HomeScreen : UIBase
     {
         Debug.Log("OnStartGame");
         GameEvents.RaiseGameStart();
+        _uiManager.ShowUI<GamePlayScreen>();
+        this.Hide();
     }
 }

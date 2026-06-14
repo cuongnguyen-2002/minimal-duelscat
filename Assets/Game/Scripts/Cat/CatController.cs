@@ -8,10 +8,27 @@ public class CatController : MonoBehaviour, ICandyEater
     private float _speed = 5f;
     [SerializeField] private float _maxRange;
     [SerializeField] private float _minRange;
+    
+    public event Action<int> OnCatEatingCandy;
 
     private void Start()
     {
         _catAnimation.PlayIdleAnimation();
+    }
+
+    private void OnEnable()
+    {
+        GameEvents.OnGameComplete += PlayWinAnimation;
+        GameEvents.OnGameOver += PlayLoseAnimation;
+        GameEvents.OnGameReset += PlayIdleAnimation;
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.OnGameOver -= PlayLoseAnimation;
+        GameEvents.OnGameComplete -= PlayWinAnimation;
+        GameEvents.OnGameReset -= PlayIdleAnimation;
+        
     }
 
     public void Drag(float x)
@@ -44,9 +61,15 @@ public class CatController : MonoBehaviour, ICandyEater
         _catAnimation.PlayWinAnimation();
     }
 
-    public void OnEatCandy()
+    public void OnEatCandy(int score)
     {
         PlayEatAnimation();
+        OnCatEatingCandy?.Invoke(score);
+    }
+
+    public void PlayIdleAnimation()
+    {
+        _catAnimation.PlayIdleAnimation();
     }
 
     private void CompleteEatAnimation(TrackEntry entry)

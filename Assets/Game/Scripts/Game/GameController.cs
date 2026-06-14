@@ -16,21 +16,26 @@ public class GameController : MonoBehaviour
     
     [Header("Config")]
     [SerializeField] private SongConfig _songConfig;
+    [SerializeField] private float _laneHeight = 8.5f;
+    [SerializeField] private float _fallingTimer = 2f;
+    [SerializeField] private float _missWindows = 0.2f;
+    [SerializeField] private float _bottomHitY = 1.6f;
         
     private List<NoteData> _notes => _candySpawner.Notes;
     private List<Candy> _candiesActive = new();
     
     
-    // testing
-    public bool IsPlaying = false;
-    public float Now;
-    public int NextIndex = 0;
-    public float FallingTimer = 2f;
+    //gameplay
+    private bool _isPlaying = false;
+    private float _songTimeNow;
+    private int _noteIndex = 0;
+    private float _fallSpeed;
+    private int _score = 0;
 
     // CandySpawner cần đọc từ controller
-    public float HitY => 1.6f;
-    public float FallSpeed { get; private set; }
-    public float MissWindows => 0.2f;
+    public float BottomHitY => _bottomHitY;
+    public float FallSpeed => _fallSpeed;
+    public float MissWindows => _missWindows;
 
     private void Awake()
     {
@@ -39,25 +44,34 @@ public class GameController : MonoBehaviour
 
     private void Init()
     {
-        FallSpeed = (5f - (-3.5f)) / FallingTimer;
-        _soundController.InitSong(_songConfig.GetRandomClip());
+        _fallSpeed = _laneHeight / _fallingTimer;
+        _score = 0;
     }
 
     private void OnEnable()
     {
         _inputReader.LeftCatMove += _leftCat.Drag;
         _inputReader.RightCatMove += _rightCat.Drag;
+        _leftCat.OnCatEatingCandy += AddScore;
+        _rightCat.OnCatEatingCandy += AddScore;
+        GameEvents.OnGameStart += StartGame;
+        GameEvents.OnGameReset += OnReset;
     }
 
     private void OnDisable()
     {
         _inputReader.LeftCatMove -= _leftCat.Drag;
         _inputReader.RightCatMove -= _rightCat.Drag;
+        _leftCat.OnCatEatingCandy -= AddScore;
+        _rightCat.OnCatEatingCandy -= AddScore;
+        GameEvents.OnGameStart -= StartGame;
+        GameEvents.OnGameReset -= OnReset;
+        
     }
 
     private void Update()
     {
-        if (!IsPlaying) return;
+        if (!_isPlaying) return;
         _inputReader.InpuHandler();
         HandleSpawnCandy();
         CheckForComplete();
@@ -67,15 +81,15 @@ public class GameController : MonoBehaviour
 
     private void HandleSpawnCandy()
     {
-        Now = _soundController.SongTime;
-        if (NextIndex < _notes.Count && _notes[NextIndex].ta - FallingTimer <= Now)
+        _songTimeNow = _soundController.SongTime;
+        if (_noteIndex < _notes.Count && _notes[_noteIndex].ta <= _songTimeNow)
         {
-            var candy = _candySpawner.SpawnCandy(NextIndex, this);
+            var candy = _candySpawner.SpawnCandy(_noteIndex, this);
             if (candy != null)
             {
                 _candiesActive.Add(candy);
             }
-            NextIndex++;
+            _noteIndex++;
         }
     }
 
@@ -85,10 +99,9 @@ public class GameController : MonoBehaviour
         {
             if (_candiesActive[i].IsOutRange)
             {
-                IsPlaying = false;
-                _leftCat.PlayLoseAnimation();
-                _rightCat.PlayLoseAnimation();
-                Debug.Log("Failed");
+                _isPlaying = false;
+                _gameSequenceController.PlayIntro();
+                GameEvents.RaiseGameOver();
             }
         }
     }
@@ -97,14 +110,16 @@ public class GameController : MonoBehaviour
     {
         if (_soundController.IsComplete && _candiesActive.Count == 0)
         {
-            Debug.Log("Win");
+            _isPlaying = false;
+            _gameSequenceController.PlayIntro();
+            GameEvents.RaiseGameComplete();
         }
     }
     
 
     private void HandleMoveCandies()
     {
-        for (int i = 0; i < _candiesActive.Count; i++)
+        for (int i = _candiesActive.Count - 1; i >= 0; i--)
         {
             if (!_candiesActive[i].gameObject.activeSelf)
             {
@@ -115,13 +130,37 @@ public class GameController : MonoBehaviour
         }
     }
 
+    private void AddScore(int score)
+    {
+        _score += score;
+        GameEvents.RaiseScoreChanged(_score);
+    }
+
+    private void ResetScore()
+    {
+        _score = 0;
+        GameEvents.RaiseScoreChanged(_score);
+    }
+
+    private void OnReset()
+    {
+        for (int i = _candiesActive.Count - 1; i >= 0; i--)
+        {
+            _candiesActive[i].OnReset();
+            _candiesActive.RemoveAt(i);
+        }
+
+        ResetScore();
+        UIManager.Instance.ShowUI<HomeScreen>();
+    }
+
     [ContextMenu("Start Game")]
     public void StartGame()
     {
-        IsPlaying = true;
-        _soundController.Playing();
+        _isPlaying = true;
+        _soundController.InitSong(_songConfig.GetRandomClip());
         _leftCat.PlayStartAnimation();
         _rightCat.PlayStartAnimation();
-        _gameSequenceController.PlayIntro();
+        _noteIndex = 0;
     }
 }

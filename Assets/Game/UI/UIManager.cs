@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
+public class UIManager : Singleton<UIManager>
 {
-    [SerializeField] private List<UIBase> _uiList = new List<UIBase>();
-    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField] private List<UIBase> _uiList = new ();
+    private UIBase _currentUI;
     void Start()
     {
         foreach (var ui in _uiList)
@@ -13,15 +12,34 @@ public class UIManager : MonoBehaviour
             ui.Init(this);
         }
 
-        ShowUI<HomeScreen>().Show();
+        ShowUI<HomeScreen>();
     }
 
-    public T ShowUI<T>() where T : UIBase
+    public void ShowUI<T>() where T : UIBase
+    {
+        var ui = GetUI<T>();
+        if (ui == null)
+        {
+            Debug.LogError($"UI ${typeof(T).Name} not found");
+            return;
+        }
+        _currentUI?.Hide();
+        _currentUI = ui;
+        ui.Show();  
+    }
+
+    public T GetUI<T>() where T : UIBase
     {
         foreach (var ui in _uiList)
         {
-            if (ui is T) return (T)ui;
+            if(ui is T @base) return @base;
         }
+        
         return null;
+    }
+
+    public void ShowPickupSong()
+    {
+        ShowUI<PickSongScreen>();
     }
 }

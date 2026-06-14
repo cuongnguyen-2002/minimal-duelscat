@@ -54,9 +54,9 @@ public class CandySpawner : MonoBehaviour
         NoteData noteData = _notes[index];
         int land = _pidToLane.ContainsKey(noteData.pid) ? _pidToLane[noteData.pid] : 0;
         
-        var candyObject = _candyFactory.CreateCandy();
+        var candyObject = _candyFactory.CreateCandy(noteData.n);
         candyObject.Init(
-            hitTime: controller.HitY,
+            hitTime: controller.BottomHitY,
             fallSpeed: controller.FallSpeed,
             missWindows: controller.MissWindows);
         candyObject.transform.position = _spawnPoints[land].position;

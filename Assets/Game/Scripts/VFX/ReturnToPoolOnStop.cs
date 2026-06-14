@@ -4,7 +4,7 @@ using UnityEngine;
 public class ReturnToPoolOnStop : MonoBehaviour
 {
     [SerializeField] private ParticleSystem _particleSystem;
-    public Action<VFXType, ParticleSystem> OnStopped;
+    public event Action<VFXType, ParticleSystem> OnStopped;
     private VFXType _vfxType;
 
     public void Init(VFXType vfxType)
@@ -16,7 +16,7 @@ public class ReturnToPoolOnStop : MonoBehaviour
 
     private void OnParticleSystemStopped()
     {
-        Debug.Log($"[VFX] {gameObject.name} stopped"); // debug check
+        // Debug.Log($"[VFX] {gameObject.name} stopped");
         OnStopped?.Invoke(_vfxType, _particleSystem);
     }
 }

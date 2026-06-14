@@ -1,5 +1,8 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
+
+public enum ScreenOrientation { Portrait, Landscape } 
 
 public class InputReader : MonoBehaviour
 {
@@ -8,6 +11,7 @@ public class InputReader : MonoBehaviour
     private float _widthScreen;
     public event Action<float> LeftCatMove;
     public event Action<float> RightCatMove;
+    public UnityEvent<ScreenOrientation> DeviceOrientationCallback;
 
     private void Start()
     {

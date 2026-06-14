@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e734131ba7f16ac42949141091886ece, type: 3}
+  m_Name: CandyConfig
+  m_EditorClassIdentifier: Assembly-CSharp::CandyConfig
+  _candyItems:
+  - ID: 101
+    CandySprite: {fileID: -4347536902644777086, guid: ca8098dd6e342474a9464541f9b95e35, type: 3}
+    Score: 2
+  - ID: 99
+    CandySprite: {fileID: 5698676842844662037, guid: 87438165c553c084eb2e0955eb648dce, type: 3}
+    Score: 3
+  - ID: 98
+    CandySprite: {fileID: -3923744130536475318, guid: a4776543cfe2cd941834400dc419b7fb, type: 3}
+    Score: 2
+  - ID: 96
+    CandySprite: {fileID: -1769173556408961752, guid: 78196e70741ebbd4489c3e3fccce9fed, type: 3}
+    Score: 3

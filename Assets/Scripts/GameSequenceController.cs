@@ -62,6 +62,7 @@ public class GameSequenceController : MonoBehaviour
             pawTransform.gameObject.SetActive(true);
             pawTransform.localScale = Vector3.one * startScale;
         }
+
         SetVignette(0f);
 
         var seq = DOTween.Sequence();
@@ -123,6 +124,6 @@ public class GameSequenceController : MonoBehaviour
             pawTransform.localScale = Vector3.zero;
             pawTransform.gameObject.SetActive(false);
         }
-        SetVignette(0f);
+        SetVignette(1f);
     }
 }

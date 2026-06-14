@@ -3,19 +3,25 @@ using UnityEngine;
 
 public class Candy :MonoBehaviour
 {
+    [SerializeField] private SpriteRenderer _visual;
+    
     private float _elapsedTime = 0f;
-
-    private float _hitTime;
     private float _fallingSpeed;
     private float _missAfter;
     private bool _isDead = false;
+    private int _score;
     public bool IsOutRange => _elapsedTime >= _missAfter;
 
     public event Action<Candy> OnComplete;
 
+    public void Init(Sprite sprite, int score)
+    {
+        _score = score;
+        _visual.sprite = sprite;
+    }
+
     public void Init(float hitTime, float fallSpeed, float missWindows)
     {
-        _hitTime = hitTime;
         _fallingSpeed = fallSpeed;
         _missAfter = hitTime + missWindows;
         _elapsedTime = 0f;
@@ -42,8 +48,13 @@ public class Candy :MonoBehaviour
         if (candyEater != null)
         {
             GameEvents.RequestSpawnVFX(VFXType.Eater, transform.position);
-            candyEater.OnEatCandy();
+            candyEater.OnEatCandy(_score);
             Die();
         }
+    }
+
+    public void OnReset()
+    {
+        Die();
     }
 }

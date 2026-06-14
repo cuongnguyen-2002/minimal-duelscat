@@ -5,7 +5,7 @@ using UnityEngine.Pool;
 public class CandyFactory : MonoBehaviour
 {
     [SerializeField] private Candy _candyPrefab;
-    
+    [SerializeField] private CandyConfig _candyConfig;
     private ObjectPool<Candy> _candyPool;
 
     private void Start()
@@ -20,10 +20,12 @@ public class CandyFactory : MonoBehaviour
             );
     }
 
-    public Candy CreateCandy()
+    public Candy CreateCandy(int id)
     {
         var candyObject = _candyPool.Get();
         candyObject.transform.SetParent(transform);
+        var candyConfigItem = _candyConfig.GetCandyItem(id);
+        if (candyConfigItem != null) candyObject.Init(candyConfigItem.CandySprite, candyConfigItem.Score);
         return candyObject;
     }
 
