@@ -314,3 +314,5 @@ Build size budget is tracked through the optimizer tool's **Audit Assets** featu
 ---
 
 Built with 💛 for the Amanotes Playable Ads Developer case study.
+
+**This doc has been written by Hermes Agent + Deepseek Flash V4 OpenCode**
