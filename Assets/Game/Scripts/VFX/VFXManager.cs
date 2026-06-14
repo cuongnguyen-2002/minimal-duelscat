@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -56,7 +55,7 @@ public class VFXManager : MonoBehaviour
     {
         var vfxInstance = Instantiate(vfxData.Prefab);
         var toPoolOnStop = vfxInstance.GetComponent<ReturnToPoolOnStop>();
-        if (toPoolOnStop == null) toPoolOnStop = vfxInstance.AddComponent<ReturnToPoolOnStop>();
+        if (toPoolOnStop == null) toPoolOnStop = vfxInstance.gameObject.AddComponent<ReturnToPoolOnStop>();
         toPoolOnStop.Init(vfxData.Type);
         toPoolOnStop.OnStopped += ReleaseVFX;
         return vfxInstance;
