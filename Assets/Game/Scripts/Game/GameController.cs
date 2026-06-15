@@ -72,7 +72,6 @@ public class GameController : MonoBehaviour
     private void Update()
     {
         if (!_isPlaying) return;
-        _inputReader.InpuHandler();
         HandleSpawnCandy();
         CheckForComplete();
         CheckForLose();
@@ -91,6 +90,7 @@ public class GameController : MonoBehaviour
             }
             _noteIndex++;
         }
+        
     }
 
     private void CheckForLose()
@@ -99,8 +99,7 @@ public class GameController : MonoBehaviour
         {
             if (_candiesActive[i].IsOutRange)
             {
-                _isPlaying = false;
-                _gameSequenceController.PlayIntro();
+                GameComplete();
                 GameEvents.RaiseGameOver();
             }
         }
@@ -110,10 +109,17 @@ public class GameController : MonoBehaviour
     {
         if (_soundController.IsComplete && _candiesActive.Count == 0)
         {
-            _isPlaying = false;
-            _gameSequenceController.PlayIntro();
+            GameComplete();
             GameEvents.RaiseGameComplete();
+            
         }
+    }
+
+    private void GameComplete()
+    {
+        _isPlaying = false;
+        _gameSequenceController.PlayIntro();
+        UIManager.Instance.GetUI<GamePlayScreen>().Hide();
     }
     
 

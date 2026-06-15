@@ -7,8 +7,10 @@ public class SoundController : MonoBehaviour
 
     public float SongDps => _audioSource.timeSamples;
     public float SongLength => _audioSource.clip.length;
-    public bool IsComplete => SongTime >= SongLength;
-    public float SongTime => _audioSource.time; 
+    public bool IsComplete => !_audioSource.isPlaying || SongTime >= SongLength - 0.01f;
+    public float SongTime => _audioSource.time;
+
+    private float _sampleRate;
 
     public void InitSong(AudioClip song, bool loop = false)
     {

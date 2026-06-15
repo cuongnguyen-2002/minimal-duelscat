@@ -12,6 +12,7 @@ public class GamePlayScreen : UIBase
     private void OnEnable()
     {
         GameEvents.OnScoreChanged += ScoreChange;
+        ScoreChange(0);
     }
 
     private void OnDisable()
@@ -22,11 +23,11 @@ public class GamePlayScreen : UIBase
     private void ScoreChange(int score)
     {
         _lastScore = score;
+        _scoreText.text = score.ToString();
         _scoreTween?.Kill();
         _scoreTween = DOTween.To(() => _lastScore, x =>
         {
             _lastScore = x;
-            _scoreText.text = score.ToString();
         }, score, 0.1f);
     }
 }
